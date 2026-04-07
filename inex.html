@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yuta Bum Quiz</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: white;
+  color: black;
+  margin: 0;
+  overflow-x: hidden;
+}
+.slide {
+  display: none;
+  text-align: center;
+  padding: 100px 20px;
+}
+.active {
+  display: block;
+}
+h2 {
+  color: black;
+}
+button {
+  padding: 10px 20px;
+  margin: 10px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  background: black;
+  color: white;
+}
+#resultBox {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  color: black;
+  padding: 30px;
+  border-radius: 25px;
+  display: none;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div id="quiz"></div>
+
+<div id="resultBox"></div>
+
+<script>
+const questions = [
+"Do you trust Yuta to carry you?",
+"Is Yuta HIM?",
+"Does he deserve his reputation?",
+"Is his power legit?",
+"Would you rely on him?",
+"Rate his strength (1-5)",
+"Rate his aura (1-5)",
+"Rate his intelligence (1-5)",
+"Rate his clutch factor (1-5)",
+"Rate his hype (1-5)",
+"Is he better than most?",
+"Is he underrated?",
+"Is his bond impressive?",
+"Is he top tier?",
+"Would you pick him in a fight?",
+"Rate his fear factor (1-5)",
+"Rate his teamwork (1-5)",
+"Rate his growth (1-5)",
+"Rate his consistency (1-5)",
+"Final: Is he a legend?"
+];
+
+let current = 0;
+let score = 0;
+let proYuta = 0;
+
+function renderQuestion() {
+  const quiz = document.getElementById("quiz");
+  quiz.innerHTML = "";
+
+  let div = document.createElement("div");
+  div.className = "slide active";
+
+  let q = document.createElement("h2");
+  q.innerText = questions[current];
+  div.appendChild(q);
+
+  if (questions[current].includes("(1-5)")) {
+    for (let i = 1; i <= 5; i++) {
+      let btn = document.createElement("button");
+      btn.innerText = i;
+      btn.onclick = () => answerScale(i);
+      div.appendChild(btn);
+    }
+  } else {
+    let yes = document.createElement("button");
+    yes.innerText = "Yes";
+    yes.onclick = () => answerYesNo(true);
+
+    let no = document.createElement("button");
+    no.innerText = "No";
+    no.onclick = () => answerYesNo(false);
+
+    div.appendChild(yes);
+    div.appendChild(no);
+  }
+
+  quiz.appendChild(div);
+}
+
+function answerYesNo(isYes) {
+  if (isYes) {
+    score -= 10;
+    proYuta++;
+  } else {
+    score += 5;
+  }
+  next();
+}
+
+function answerScale(val) {
+  if (val >= 4) {
+    score -= 10;
+    proYuta++;
+  } else {
+    score += 5;
+  }
+  next();
+}
+
+function next() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById("quiz").style.display = "none";
+  const box = document.getElementById("resultBox");
+  box.style.display = "block";
+
+  let percentage = Math.abs(score);
+
+  if (proYuta >= 5) {
+    box.innerHTML = `
+      <h2>I have bad news...</h2>
+      <h3>...</h3>
+      <h2>You have been diagnosed with YUTA Glaze Syndrome</h2>
+      <p>Bum Percentage: ${percentage}%</p>
+      <p>Total Score: ${score}</p>
+    `;
+  } else {
+    box.innerHTML = `
+      <h2>Congratulations!</h2>
+      <p>You are not a bum.</p>
+      <p>Score: ${score}</p>
+      <h3>👏👏👏</h3>
+    `;
+  }
+}
+
+renderQuestion();
+</script>
+
+</body>
+</html>
